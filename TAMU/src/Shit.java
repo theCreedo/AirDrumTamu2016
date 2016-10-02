@@ -61,7 +61,7 @@ class Runner extends Thread {
 			        			  soundWait++;
 		        			  } else {
 		        				  soundWait++;
-		        				  if(soundWait >= 5) {
+		        				  if(soundWait >= 3) {
 		        					  soundWait = 0;
 				        			  playSound = false;
 		        				  }
@@ -79,7 +79,7 @@ class Runner extends Thread {
 			        			  soundWait++;
 		        			  } else {
 		        				  soundWait++;
-		        				  if(soundWait >= 5) {
+		        				  if(soundWait >= 3) {
 		        					  soundWait = 0;
 				        			  playSound = false;
 		        				  }
@@ -97,7 +97,7 @@ class Runner extends Thread {
 			        			  soundWait++;
 		        			  } else {
 		        				  soundWait++;
-		        				  if(soundWait >= 5) {
+		        				  if(soundWait >= 3) {
 		        					  soundWait = 0;
 				        			  playSound = false;
 		        				  }
