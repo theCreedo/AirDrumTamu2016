@@ -13,7 +13,11 @@ class Runner extends Thread {
 		
 		StringBuffer cache = new StringBuffer();
 		int counter = 0;
-		
+		int soundWait = 0;
+		double previousG = 0;
+		double currentG = 0;
+		double delta = 0;
+		int deltaCalc = 0;
 		  while(true){
 		      try {
 		          String inputStr = null;
@@ -46,40 +50,85 @@ class Runner extends Thread {
 		        		  boolean isCymbal =  ((fingerpres2 < 60) && !(fingerpres3 < 100)); // || ((fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010));
 		        		  
 		        		  if(isCymbal) {
-		        			  Shit.labels.get("sounds").get(0).setText("Cymbal played");
+		        			  if(soundWait == 0) {
+			        			  Shit.labels.get("sounds").get(0).setText("Cymbal played");
+			        			  soundWait++;
+		        			  } else {
+		        				  soundWait++;
+		        				  if(soundWait == 10) {
+		        					  soundWait = 0;
+		        				  }
+		        			  }
 		        		  } else {
-		        			  Shit.labels.get("sounds").get(0).setText("");
+		        			  if(soundWait == 0)
+		        				  Shit.labels.get("sounds").get(0).setText("");
 		        		  }
 		        		  
 		        		  if(isBass) {
-		        			  Shit.labels.get("sounds").get(1).setText("Bass played");
+		        			  if(soundWait == 0) {
+			        			  Shit.labels.get("sounds").get(1).setText("Bass played");
+			        			  soundWait++;
+		        			  } else {
+		        				  soundWait++;
+		        				  if(soundWait == 10) {
+		        					  soundWait = 0;
+		        				  }
+		        			  }
 		        		  } else {
-		        			  Shit.labels.get("sounds").get(1).setText("");
+		        			  if(soundWait == 0)
+		        				  Shit.labels.get("sounds").get(1).setText("");
 		        		  }
 		        		  
 		        		  if(isSnare) {
-		        			  Shit.labels.get("sounds").get(2).setText("Snare played");
+		        			  if(soundWait == 0) {
+			        			  Shit.labels.get("sounds").get(2).setText("Snare played");
+			        			  soundWait++;
+		        			  } else {
+		        				  soundWait++;
+		        				  if(soundWait == 10) {
+		        					  soundWait = 0;
+		        				  }
+		        			  }
 		        		  } else {
-		        			  Shit.labels.get("sounds").get(2).setText("");
+		        			  if(soundWait == 0)
+		        				  Shit.labels.get("sounds").get(2).setText("");
 		        		  }
 		        		  
 		        		 // Gets the all 5 finger flex information
 		        		  for (int i = 0; i < 5; i++)
-		        		 Shit.labels.get("flex").get(i).setText(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(i)));
+		        		 Shit.labels.get("flex").get(i).setText("finger"+ (i + 1)+ ": " + String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(i)));
 		        		  
 		        		// Gets the all 5 finger pressure information
 		        		  for (int i = 0; i < 5; i++)
-				        Shit.labels.get("pressure").get(i).setText(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(i)));
+				        Shit.labels.get("pressure").get(i).setText("finger"+ (i + 1)+ ": " + String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(i)));
 		        		  
 		        		  String[] chars = {"x", "y", "z"};
 		        		  String[] hpr = {"heading", "pitch", "roll"};
 		        		// Gets the Accelerometer adc information
+		        		  double temp = 0;
+		        		  temp = previousG;
+		        		  previousG = currentG;
+		        		  currentG = Double.parseDouble(String.valueOf(
+								((JSONObject)((JSONObject)((JSONObject)
+										o.get("hand"))
+										.get("accelerometer")).
+										get("g")).get(chars[1])));
+		        		  delta = (currentG - previousG);
+		        		  if(delta <= 0.03 && delta >= -0.05)
+		        			  delta = 0.0;
+		        		  if(delta >0.03)
+		        			  delta = 1.0;
+		        		  if(delta <-0.05)
+		        			  delta = -1.0;
 		        		  for (int i = 0; i < 3; i++)
 						Shit.labels.get("accelerometer_adc").get(i).setText(chars[i] + ": " + String.valueOf(
 								((JSONObject)((JSONObject)((JSONObject)
 										o.get("hand"))
 										.get("accelerometer")).
 										get("adc")).get(chars[i])));
+
+		        		// Gets the Accelerometer delta (change in adc) information
+		        		  Shit.labels.get("accelerometer_delta").get(0).setText("delta: " + delta);
 		        		  
 		        		// Gets the Attitude g information
 		        		  for (int i = 0; i < 3; i++)
@@ -202,7 +251,7 @@ public static void main (String args[]) {
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setSize(1000,1000);
 	frame.setLayout(null);
-	
+	x += 30;
 	// Finger flex and pressure data
 	addBoldLabel("Fingers");
 	addBoldLabel("Flex");
@@ -211,13 +260,14 @@ public static void main (String args[]) {
 	addSet("pressure", 5);
 	
 	y = 0;
-	x += 300;
+	x += 275;
 	
 	// Accelerometer adc/g and Attitude degrees/radians data
 	addBoldLabel("Hands");
 	addBoldLabel("Accelerometer");
 	addLabel("adc");
 	addSet("accelerometer_adc", 3);
+	addSet("accelerometer_delta", 1);
 	addLabel("g");
 	addSet("accelerometer_g", 3);
 	addBoldLabel("Attitude");
@@ -227,7 +277,7 @@ public static void main (String args[]) {
 	addSet("attitude_radians", 3);
 	
 	y = 30;
-	x += 300;
+	x += 275;
 	
 	// Gyroscope adc/dps and Magnetometer adc/gauss data
 	addBoldLabel("Gyroscope");
@@ -243,7 +293,7 @@ public static void main (String args[]) {
 	
 	
 	y = 30;
-	x += 300;
+	x += 275;
 
 	// Sound to play
 	addBoldLabel("Sounds");
