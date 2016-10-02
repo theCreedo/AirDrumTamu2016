@@ -5,6 +5,9 @@ import java.util.*;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
+import javax.sound.sampled.*;
+import javafx.scene.media.*;
+
 class Runner extends Thread {
 	public void run(){
 		
@@ -17,7 +20,6 @@ class Runner extends Thread {
 		double previousG = 0;
 		double currentG = 0;
 		double delta = 0;
-		int deltaCalc = 0;
 		  while(true){
 		      try {
 		          String inputStr = null;
@@ -46,12 +48,13 @@ class Runner extends Thread {
 		        		  
 		        		  //checks to see if bass should be played
 		        		  boolean isBass = (!(fingerpres2 < 60 ) && !(fingerpres3 < 100)) || ((fingerflex2 <= 1006) && (fingerflex5 <= 1006)); //  || ((fingerflex1 <= 1010) && (fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010))
-		        		  boolean isSnare = ((fingerpres2 < 10) && (fingerpres3 < 10)); // || (!(fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && !(fingerflex3 <= 1010) && !(fingerflex4 <= 1010) && !(fingerflex5 <= 1010))
+		        		  boolean isSnare = ((fingerpres2 < 60) && (fingerpres3 < 100)); // || (!(fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && !(fingerflex3 <= 1010) && !(fingerflex4 <= 1010) && !(fingerflex5 <= 1010))
 		        		  boolean isCymbal =  ((fingerpres2 < 60) && !(fingerpres3 < 100)); // || ((fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010));
 		        		  
 		        		  if(isCymbal) {
 		        			  if(soundWait == 0) {
 			        			  Shit.labels.get("sounds").get(0).setText("Cymbal played");
+			        			  Shit.play("cymbal.wav");
 			        			  soundWait++;
 		        			  } else {
 		        				  soundWait++;
@@ -67,6 +70,7 @@ class Runner extends Thread {
 		        		  if(isBass) {
 		        			  if(soundWait == 0) {
 			        			  Shit.labels.get("sounds").get(1).setText("Bass played");
+			        			  Shit.play("bass.wav");
 			        			  soundWait++;
 		        			  } else {
 		        				  soundWait++;
@@ -82,6 +86,7 @@ class Runner extends Thread {
 		        		  if(isSnare) {
 		        			  if(soundWait == 0) {
 			        			  Shit.labels.get("sounds").get(2).setText("Snare played");
+			        			  Shit.play("snare.wav");
 			        			  soundWait++;
 		        			  } else {
 		        				  soundWait++;
@@ -245,6 +250,17 @@ public static void addSet(String setName, int iterations) {
 	labels.put(setName, set);
 }
 	
+public static void play(String s) {
+	try {
+		File f = new File(s);
+		Clip clip = AudioSystem.getClip();
+		clip.open(AudioSystem.getAudioInputStream(f));
+		clip.start();
+		System.out.println("test");
+		//Thread.sleep(clip.getMicrosecondLength());
+	}catch(Exception e) {System.out.println("balls: " + e.getMessage());}
+}
+
 public static void main (String args[]) {
 	//Create GUI
 	frame = new JFrame("Smart Glove Visualizer");
