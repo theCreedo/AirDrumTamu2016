@@ -26,7 +26,43 @@ class Runner extends Thread {
 		        	  if (counter == 68) {
 		        		  JSONParser parser = new JSONParser();
 		        		  JSONObject o = (JSONObject) parser.parse(cache.toString());
-
+		        		  
+		        		  // parses finger data
+		        		  double fingerflex1 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(0)));
+		        		  double fingerflex2 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(1)));
+		        		  double fingerflex3 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(2)));
+		        		  double fingerflex4 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(3)));
+		        		  double fingerflex5 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(4)));
+		        		  
+		        		  double fingerpres1 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(0)));
+		        		  double fingerpres2 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(1)));
+		        		  double fingerpres3 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(2)));
+		        		  double fingerpres4 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(3)));
+		        		  double fingerpres5 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(4)));
+		        		  
+		        		  //checks to see if bass should be played
+		        		  boolean isBass = ((fingerflex1 <= 1010) && (fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010));
+		        		  boolean isSnare = (!(fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && !(fingerflex3 <= 1010) && !(fingerflex4 <= 1010) && !(fingerflex5 <= 1010));
+		        		  boolean isCymbal =  ((fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010));
+		        		  
+		        		  if(isCymbal) {
+		        			  Shit.labels.get("sounds").get(0).setText("Cymbal played");
+		        		  } else {
+		        			  Shit.labels.get("sounds").get(0).setText("");
+		        		  }
+		        		  
+		        		  if(isBass) {
+		        			  Shit.labels.get("sounds").get(1).setText("Bass played");
+		        		  } else {
+		        			  Shit.labels.get("sounds").get(1).setText("");
+		        		  }
+		        		  
+		        		  if(isSnare) {
+		        			  Shit.labels.get("sounds").get(2).setText("Snare played");
+		        		  } else {
+		        			  Shit.labels.get("sounds").get(2).setText("");
+		        		  }
+		        		  
 		        		 // Gets the all 5 finger flex information
 		        		  for (int i = 0; i < 5; i++)
 		        		 Shit.labels.get("flex").get(i).setText(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(i)));
@@ -205,7 +241,14 @@ public static void main (String args[]) {
 	addLabel("gauss");
 	addSet("magnetometer_gauss", 3);
 	
+	
+	y = 30;
+	x += 300;
 
+	// Sound to play
+	addBoldLabel("Sounds");
+	addSet("sounds", 3);
+	
 	// Sets visual table to true
 	frame.setVisible(true);
 	
