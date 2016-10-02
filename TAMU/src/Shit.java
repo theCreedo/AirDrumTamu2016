@@ -9,13 +9,6 @@ class Runner extends Thread {
 	public void run(){
 		
 		InputStreamReader fr = new InputStreamReader(System.in);
-		/*FileReader fr = null;
-		try {
-			fr = new FileReader(new File("hand_json"));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}*/
 		BufferedReader bufReader = new BufferedReader(fr);
 		
 		StringBuffer cache = new StringBuffer();
@@ -24,30 +17,27 @@ class Runner extends Thread {
 		  while(true){
 		      try {
 		          String inputStr = null;
+		          // Checks to see if buffered reader is outputting values
 		          if((inputStr=bufReader.readLine()) != null) {
-		              //System.out.println(inputStr);
 		        	  cache.append(inputStr + "\n");
 		        	  counter++;
 		        	  
-		        	  if (counter == 68) { //Each JSON object is 68 lines long
-		        		  //System.out.println("counter == 68");
+		        	  //Each JSON object is 68 lines long
+		        	  if (counter == 68) {
 		        		  JSONParser parser = new JSONParser();
 		        		  JSONObject o = (JSONObject) parser.parse(cache.toString());
-		        		//  JSONArray array = (JSONArray) o;
-		        		//  JSONObject obj = (JSONObject) array.get(0); //First one (and only one)
-		        		  
-		        		  
-		        		  //System.out.println("works");
-		        		  
-		        		  
+
+		        		 // Gets the all 5 finger flex information
 		        		  for (int i = 0; i < 5; i++)
 		        		 Shit.labels.get("flex").get(i).setText(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(i)));
 		        		  
+		        		// Gets the all 5 finger pressure information
 		        		  for (int i = 0; i < 5; i++)
 				        Shit.labels.get("pressure").get(i).setText(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(i)));
 		        		  
 		        		  String[] chars = {"x", "y", "z"};
 		        		  String[] hpr = {"heading", "pitch", "roll"};
+		        		// Gets the Accelerometer adc information
 		        		  for (int i = 0; i < 3; i++)
 						Shit.labels.get("accelerometer_adc").get(i).setText(chars[i] + ": " + String.valueOf(
 								((JSONObject)((JSONObject)((JSONObject)
@@ -55,6 +45,7 @@ class Runner extends Thread {
 										.get("accelerometer")).
 										get("adc")).get(chars[i])));
 		        		  
+		        		// Gets the Attitude g information
 		        		  for (int i = 0; i < 3; i++)
 								Shit.labels.get("accelerometer_g").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
@@ -62,21 +53,23 @@ class Runner extends Thread {
 												.get("accelerometer")).
 												get("g")).get(chars[i])));
 		        		  
-		        		  
+		        		// Gets the Attitude degrees information
 		        		  for (int i = 0; i < 3; i++)
 								Shit.labels.get("attitude_degrees").get(i).setText(hpr[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("attitude")).
 												get("degrees")).get(hpr[i])));
-		        		  
+
+		        		  // Gets the Attitude radians information
 		        		  for (int i = 0; i < 3; i++)
 								Shit.labels.get("attitude_radians").get(i).setText(hpr[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("attitude")).
 												get("radians")).get(hpr[i])));
-		        		  
+
+		        		  // Gets the Gyroscope adc information
 		        		  for (int i = 0; i < 3; i++)
 								Shit.labels.get("gyroscope_adc").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
@@ -84,6 +77,7 @@ class Runner extends Thread {
 												.get("gyroscope")).
 												get("adc")).get(chars[i])));
 		        		  
+		        		  // Gets the Gyroscope dps information
 		        		  for (int i = 0; i < 3; i++)
 								Shit.labels.get("gyroscope_dps").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
@@ -91,6 +85,7 @@ class Runner extends Thread {
 												.get("gyroscope")).
 												get("dps")).get(chars[i])));
 		        		  
+		        		  // Gets the Magnetometer adc information
 		        		  for (int i = 0; i < 3; i++)
 								Shit.labels.get("magnetometer_adc").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
@@ -98,36 +93,26 @@ class Runner extends Thread {
 												.get("magnetometer")).
 												get("adc")).get(chars[i])));
 		        		  
+		        		  // Gets the Magnetometer gauss information
 		        		  for (int i = 0; i < 3; i++)
 								Shit.labels.get("magnetometer_gauss").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("magnetometer")).
 												get("gauss")).get(chars[i])));
-		        		  
+		        		  //Resets counter
 		        		  counter = 0;
 		        		  cache.setLength(0);
-		        		  //break;
 		        	  }
 		          }
 		          else {
 		              System.out.println("Input ended");
 		              break;
-		              
 		          }
 		      }
 		      catch (Exception e) {System.out.println("Error: " + e.getMessage());}
-			  /*System.out.println("balls");
-			  try {
-				  Thread.sleep(250);
-			  }
-			  catch(Exception e) {}*/
 		  }
-		  
-		  //System.out.println(cache);
-	}
-	
-		
+	}	
 }
     
 
@@ -142,7 +127,7 @@ static int y = 0;
 static int w = 150;
 static int h = 30;
 
-
+// Bolder font labels
 public static void addBoldLabel(String s) {
 	JLabel j = new JLabel(s);
 	Font f = j.getFont();
@@ -152,6 +137,7 @@ public static void addBoldLabel(String s) {
 	y += 30;
 }
 
+// Regular font labels
 public static void addLabel(String s) {
 	JLabel j = new JLabel(s);
 	j.setBounds(new Rectangle(x,y,w,h));
@@ -159,6 +145,7 @@ public static void addLabel(String s) {
 	y += 30;
 }
 
+// ** Important ** Where all visual data is updated
 public static void addSet(String setName, int iterations) {
 	ArrayList<JLabel>set = new ArrayList<JLabel>();
 	for (int i = 0; i < iterations; i++) {
@@ -169,35 +156,18 @@ public static void addSet(String setName, int iterations) {
 		y += 20;
 	}
 	y += 40;
+	// Setting global variable
 	labels.put(setName, set);
 }
 	
 public static void main (String args[]) {
-  /*InputStreamReader isReader = new InputStreamReader(System.in);
-  BufferedReader bufReader = new BufferedReader(isReader);
-  while(true){
-      try {
-          String inputStr = null;
-          if((inputStr=bufReader.readLine()) != null) {
-              System.out.println(inputStr);
-          }
-          else {
-              System.out.println("Input ended");
-              break;
-              
-          }
-      }
-      catch (Exception e) {
-          //do nothing
-      }
-  }*/
-	
 	//Create GUI
 	frame = new JFrame("Smart Glove Visualizer");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setSize(1000,1000);
 	frame.setLayout(null);
 	
+	// Finger flex and pressure data
 	addBoldLabel("Fingers");
 	addBoldLabel("Flex");
 	addSet("flex", 5);
@@ -207,6 +177,7 @@ public static void main (String args[]) {
 	y = 0;
 	x += 300;
 	
+	// Accelerometer adc/g and Attitude degrees/radians data
 	addBoldLabel("Hands");
 	addBoldLabel("Accelerometer");
 	addLabel("adc");
@@ -222,6 +193,7 @@ public static void main (String args[]) {
 	y = 30;
 	x += 300;
 	
+	// Gyroscope adc/dps and Magnetometer adc/gauss data
 	addBoldLabel("Gyroscope");
 	addLabel("adc");
 	addSet("gyroscope_adc", 3);
@@ -234,9 +206,10 @@ public static void main (String args[]) {
 	addSet("magnetometer_gauss", 3);
 	
 
-	
+	// Sets visual table to true
 	frame.setVisible(true);
 	
+	// Start the thread
 	Runner r = new Runner();
 	r.start();
 	
