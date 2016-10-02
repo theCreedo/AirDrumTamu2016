@@ -20,6 +20,7 @@ class Runner extends Thread {
 		double previousG = 0;
 		double currentG = 0;
 		double delta = 0;
+		boolean playSound = false;
 		  while(true){
 		      try {
 		          String inputStr = null;
@@ -45,21 +46,24 @@ class Runner extends Thread {
 		        		  double fingerpres3 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(2)));
 		        		  double fingerpres4 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(3)));
 		        		  double fingerpres5 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(4)));
+
 		        		  
 		        		  //checks to see if bass should be played
-		        		  boolean isBass = (!(fingerpres2 < 60 ) && !(fingerpres3 < 100)) || ((fingerflex2 <= 1006) && (fingerflex5 <= 1006)); //  || ((fingerflex1 <= 1010) && (fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010))
+		        		  boolean isBass = (!(fingerpres2 < 60 ) && !(fingerpres3 < 100)); //  || ((fingerflex1 <= 1010) && (fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010))
 		        		  boolean isSnare = ((fingerpres2 < 60) && (fingerpres3 < 100)); // || (!(fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && !(fingerflex3 <= 1010) && !(fingerflex4 <= 1010) && !(fingerflex5 <= 1010))
 		        		  boolean isCymbal =  ((fingerpres2 < 60) && !(fingerpres3 < 100)); // || ((fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010));
 		        		  
 		        		  if(isCymbal) {
-		        			  if(soundWait == 0) {
+		        			  if(!playSound && delta == -1 && soundWait == 0) {
 			        			  Shit.labels.get("sounds").get(0).setText("Cymbal played");
-			        			  Shit.play("cymbal.wav");
+			        			  Shit.play("cymbal");
+			        			  playSound = true;
 			        			  soundWait++;
 		        			  } else {
 		        				  soundWait++;
-		        				  if(soundWait == 10) {
+		        				  if(soundWait >= 5) {
 		        					  soundWait = 0;
+				        			  playSound = false;
 		        				  }
 		        			  }
 		        		  } else {
@@ -68,14 +72,16 @@ class Runner extends Thread {
 		        		  }
 		        		  
 		        		  if(isBass) {
-		        			  if(soundWait == 0) {
+		        			  if(!playSound && delta == -1 && soundWait == 0) {
 			        			  Shit.labels.get("sounds").get(1).setText("Bass played");
-			        			  Shit.play("bass.wav");
+			        			  Shit.play("bass");
+			        			  playSound = true;
 			        			  soundWait++;
 		        			  } else {
 		        				  soundWait++;
-		        				  if(soundWait == 10) {
+		        				  if(soundWait >= 5) {
 		        					  soundWait = 0;
+				        			  playSound = false;
 		        				  }
 		        			  }
 		        		  } else {
@@ -84,21 +90,42 @@ class Runner extends Thread {
 		        		  }
 		        		  
 		        		  if(isSnare) {
-		        			  if(soundWait == 0) {
+		        			  if(!playSound && delta == -1 && soundWait == 0) {
 			        			  Shit.labels.get("sounds").get(2).setText("Snare played");
-			        			  Shit.play("snare.wav");
+			        			  Shit.play("snare");
+			        			  playSound = true;
 			        			  soundWait++;
 		        			  } else {
 		        				  soundWait++;
-		        				  if(soundWait == 10) {
+		        				  if(soundWait >= 5) {
 		        					  soundWait = 0;
+				        			  playSound = false;
 		        				  }
 		        			  }
 		        		  } else {
 		        			  if(soundWait == 0)
 		        				  Shit.labels.get("sounds").get(2).setText("");
 		        		  }
-		        		  
+		        		  if(!isBass && !isCymbal && !isSnare) {
+		        			  soundWait = 0;
+		        			  playSound = false;
+		        		  }
+
+		        		  double temp = 0;
+		        		  temp = previousG;
+		        		  previousG = currentG;
+		        		  currentG = Double.parseDouble(String.valueOf(
+								((JSONObject)((JSONObject)((JSONObject)
+										o.get("hand"))
+										.get("accelerometer")).
+										get("g")).get("y")));
+		        		  delta = (currentG - previousG);
+		        		  if(delta <= 0.08 && delta >= -0.08)
+		        			  delta = 0.0;
+		        		  if(delta >0.08)
+		        			  delta = 1.0;
+		        		  if(delta <-0.08)
+		        			  delta = -1.0;
 		        		 // Gets the all 5 finger flex information
 		        		  for (int i = 0; i < 5; i++)
 		        		 Shit.labels.get("flex").get(i).setText("finger"+ (i + 1)+ ": " + String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(i)));
@@ -110,21 +137,6 @@ class Runner extends Thread {
 		        		  String[] chars = {"x", "y", "z"};
 		        		  String[] hpr = {"heading", "pitch", "roll"};
 		        		// Gets the Accelerometer adc information
-		        		  double temp = 0;
-		        		  temp = previousG;
-		        		  previousG = currentG;
-		        		  currentG = Double.parseDouble(String.valueOf(
-								((JSONObject)((JSONObject)((JSONObject)
-										o.get("hand"))
-										.get("accelerometer")).
-										get("g")).get(chars[1])));
-		        		  delta = (currentG - previousG);
-		        		  if(delta <= 0.03 && delta >= -0.05)
-		        			  delta = 0.0;
-		        		  if(delta >0.03)
-		        			  delta = 1.0;
-		        		  if(delta <-0.05)
-		        			  delta = -1.0;
 		        		  for (int i = 0; i < 3; i++)
 						Shit.labels.get("accelerometer_adc").get(i).setText(chars[i] + ": " + String.valueOf(
 								((JSONObject)((JSONObject)((JSONObject)
@@ -211,6 +223,8 @@ public class Shit{
 
 	
 public static HashMap<String, ArrayList<JLabel>> labels = new HashMap<String, ArrayList<JLabel>>();
+public static HashMap<String, Clip> sfx = new HashMap<String, Clip>();
+
 static JFrame frame;
 static int x = 0;
 static int y = 0;
@@ -251,17 +265,39 @@ public static void addSet(String setName, int iterations) {
 }
 	
 public static void play(String s) {
-	try {
-		File f = new File(s);
-		Clip clip = AudioSystem.getClip();
-		clip.open(AudioSystem.getAudioInputStream(f));
+		Clip clip = sfx.get(s);
+		if (clip.getFramePosition() != 0) {
+		clip.stop();
+		clip.setFramePosition(0);}
+		
+		//if (clip.getFramePosition() != 0)
 		clip.start();
-		System.out.println("test");
-		//Thread.sleep(clip.getMicrosecondLength());
-	}catch(Exception e) {System.out.println("balls: " + e.getMessage());}
+		
 }
 
 public static void main (String args[]) {
+	
+	//Load sound fx
+	try {
+		File f = new File("bass.wav");
+		Clip clip = AudioSystem.getClip();
+		clip.open(AudioSystem.getAudioInputStream(f));
+		sfx.put("bass", clip);
+		
+		f = new File("cymbal.wav");
+		clip = AudioSystem.getClip();
+		clip.open(AudioSystem.getAudioInputStream(f));
+		sfx.put("cymbal", clip);
+		
+		f = new File("snare.wav");
+		clip = AudioSystem.getClip();
+		clip.open(AudioSystem.getAudioInputStream(f));
+		sfx.put("snare", clip);
+		
+		//clip.setFramePosition(0);
+		//clip.start();
+	}catch(Exception e) {System.out.println("err loading soundfx: " + e.getMessage());}
+	
 	//Create GUI
 	frame = new JFrame("Smart Glove Visualizer");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
