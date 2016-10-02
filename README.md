@@ -1,18 +1,18 @@
 # Inputs: Gestures - Output: Sounds
-Closed Fist - Bass Drum
-Two finger fist - Snare
-Index finger fist - Crash Cymbal
+- Closed Fist - Bass Drum
+- Two finger fist - Snare
+- Index finger fist - Crash Cymbal
 // Pinky finger fist Splash Cymbal
 // Thumbs up fist - Hi-hat
 // Open Fist
 
 Cases:
-Taking Note of Gesture - Look at Gesture value based on flex or !flex
-5 flex
-Two finger Flex
-Index Flex
-Thumb flex
-0 Flex
+- Taking Note of Gesture - Look at Gesture value based on flex or !flex
+- 5 flex
+- Two finger Flex
+- Index Flex
+- Thumb flex
+- 0 Flex
 
 Movements: 
 Taking note of accelerometer
