@@ -41,9 +41,9 @@ class Runner extends Thread {
 		        		  double fingerpres5 = Double.parseDouble(String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(4)));
 		        		  
 		        		  //checks to see if bass should be played
-		        		  boolean isBass = ((fingerflex1 <= 1010) && (fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010));
-		        		  boolean isSnare = (!(fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && !(fingerflex3 <= 1010) && !(fingerflex4 <= 1010) && !(fingerflex5 <= 1010));
-		        		  boolean isCymbal =  ((fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010));
+		        		  boolean isBass = (!(fingerpres2 < 60 ) && !(fingerpres3 < 100)) || ((fingerflex2 <= 1006) && (fingerflex5 <= 1006)); //  || ((fingerflex1 <= 1010) && (fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010))
+		        		  boolean isSnare = ((fingerpres2 < 10) && (fingerpres3 < 10)); // || (!(fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && !(fingerflex3 <= 1010) && !(fingerflex4 <= 1010) && !(fingerflex5 <= 1010))
+		        		  boolean isCymbal =  ((fingerpres2 < 60) && !(fingerpres3 < 100)); // || ((fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010));
 		        		  
 		        		  if(isCymbal) {
 		        			  Shit.labels.get("sounds").get(0).setText("Cymbal played");
