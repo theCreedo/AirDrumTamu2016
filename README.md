@@ -2,9 +2,9 @@
 - Closed Fist - Bass Drum
 - Two finger fist - Snare
 - Index finger fist - Crash Cymbal
-// Pinky finger fist Splash Cymbal
-// Thumbs up fist - Hi-hat
-// Open Fist
+// - Pinky finger fist Splash Cymbal
+// - Thumbs up fist - Hi-hat
+// - Open Fist
 
 Cases:
 - Taking Note of Gesture - Look at Gesture value based on flex or !flex
