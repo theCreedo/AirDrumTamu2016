@@ -1,4 +1,4 @@
-Demo Link : https://www.youtube.com/watch?v=EH0TK0etGXw
+Video Link : https://www.youtube.com/watch?v=EH0TK0etGXw
 
 ## Inspiration
 We were inspired to do this as we really wanted to implement a design using Arduino related technology. After learning the basic ideas of how they work from a basic board, we happened across a Smart Glove implemented with Arduino Yun to detect data input from the hand. After trying to integrate the hardware with Alex, we realized certain gestures could be interpreted. This led us to decide to create a drum player application that could utilize the data received from the hand gestures/movement to simulate actually playing the drums.
