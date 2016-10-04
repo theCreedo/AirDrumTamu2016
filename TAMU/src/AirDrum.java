@@ -82,33 +82,6 @@ class Runner extends Thread {
 		        			  AirDrum.labels.get("sounds").get(2).setText("-"); 
 		        		  }
 		        		  
-//		        		  waitCymbal++;
-//		        		  waitBass++;
-//		        		  waitSnare++;
-//		        		  int bull = 3;
-		        		  
-//		        		  if (waitCymbal > bull && isCymbal) {
-//		        			  Shit.labels.get("sounds").get(0).setText("Cymbal played");
-//		        			  waitCymbal = 0;
-//		        			  Shit.play("cymbal");
-//		        			  
-//		        		  }
-//		        		  if (waitSnare > bull && isSnare) {
-//		        			  Shit.labels.get("sounds").get(2).setText("Snare played");
-//		        			  waitSnare = 0;
-//		        			  Shit.play("snare");
-//		        		  }
-//		        		  if (waitBass > bull && isBass) {
-//		        			  Shit.labels.get("sounds").get(1).setText("Bass played");
-//		        			  waitBass = 0;
-//		        			  Shit.play("bass");
-//		        		  }
-		        		  
-		        	
-		        		  
-		        		  
-		      
-		        		  
 		        		  if(isCymbal) {
 		        			  if(!playSound && delta == -1 && soundWait == 0) {
 			        			  AirDrum.labels.get("sounds").get(0).setText("Cymbal played");
