@@ -17,10 +17,16 @@ class Runner extends Thread {
 		StringBuffer cache = new StringBuffer();
 		int counter = 0;
 		int soundWait = 0;
+		int waitCymbal = 0, waitBass = 0, waitSnare = 0;
 		double previousG = 0;
 		double currentG = 0;
 		double delta = 0;
 		boolean playSound = false;
+		
+		//int minTime = 300; //Min time (ms) for each JSON object read,
+							//otherwise throw away object
+		//long lastTime = System.currentTimeMillis();
+		
 		  while(true){
 		      try {
 		          String inputStr = null;
@@ -31,6 +37,18 @@ class Runner extends Thread {
 		        	  
 		        	  //Each JSON object is 68 lines long
 		        	  if (counter == 68) {
+		        		  
+		        		  /*long cur = System.currentTimeMillis();
+		        		  if (cur - lastTime >= minTime) {
+		        			  //Allowable
+		        			  lastTime = cur;
+		        		  }
+		        		  else {
+		        			  //Ignore this data (too fast)
+		        			  counter = 0;
+			        		  cache.setLength(0);
+			        		  continue;
+		        		  }*/
 		        		  JSONParser parser = new JSONParser();
 		        		  JSONObject o = (JSONObject) parser.parse(cache.toString());
 		        		  
@@ -53,10 +71,48 @@ class Runner extends Thread {
 		        		  boolean isSnare = ((fingerpres2 < 60) && (fingerpres3 < 100)); // || (!(fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && !(fingerflex3 <= 1010) && !(fingerflex4 <= 1010) && !(fingerflex5 <= 1010))
 		        		  boolean isCymbal =  ((fingerpres2 < 60) && !(fingerpres3 < 100)); // || ((fingerflex1 <= 1010) && !(fingerflex2 <= 1010) && (fingerflex3 <= 1010) && (fingerflex4 <= 1010) && (fingerflex5 <= 1010));
 		        		  
+		        		  
+		        		  if (!isCymbal) {
+		        			  AirDrum.labels.get("sounds").get(0).setText("-"); 
+		        		  }
+		        		  if (!isBass) {
+		        			  AirDrum.labels.get("sounds").get(1).setText("-"); 
+		        		  }
+		        		  if (!isSnare) {
+		        			  AirDrum.labels.get("sounds").get(2).setText("-"); 
+		        		  }
+		        		  
+//		        		  waitCymbal++;
+//		        		  waitBass++;
+//		        		  waitSnare++;
+//		        		  int bull = 3;
+		        		  
+//		        		  if (waitCymbal > bull && isCymbal) {
+//		        			  Shit.labels.get("sounds").get(0).setText("Cymbal played");
+//		        			  waitCymbal = 0;
+//		        			  Shit.play("cymbal");
+//		        			  
+//		        		  }
+//		        		  if (waitSnare > bull && isSnare) {
+//		        			  Shit.labels.get("sounds").get(2).setText("Snare played");
+//		        			  waitSnare = 0;
+//		        			  Shit.play("snare");
+//		        		  }
+//		        		  if (waitBass > bull && isBass) {
+//		        			  Shit.labels.get("sounds").get(1).setText("Bass played");
+//		        			  waitBass = 0;
+//		        			  Shit.play("bass");
+//		        		  }
+		        		  
+		        	
+		        		  
+		        		  
+		      
+		        		  
 		        		  if(isCymbal) {
 		        			  if(!playSound && delta == -1 && soundWait == 0) {
-			        			  Shit.labels.get("sounds").get(0).setText("Cymbal played");
-			        			  Shit.play("cymbal");
+			        			  AirDrum.labels.get("sounds").get(0).setText("Cymbal played");
+			        			  AirDrum.play("cymbal");
 			        			  playSound = true;
 			        			  soundWait++;
 		        			  } else {
@@ -68,13 +124,13 @@ class Runner extends Thread {
 		        			  }
 		        		  } else {
 		        			  if(soundWait == 0)
-		        				  Shit.labels.get("sounds").get(0).setText("");
+		        				  AirDrum.labels.get("sounds").get(0).setText("");
 		        		  }
 		        		  
 		        		  if(isBass) {
 		        			  if(!playSound && delta == -1 && soundWait == 0) {
-			        			  Shit.labels.get("sounds").get(1).setText("Bass played");
-			        			  Shit.play("bass");
+			        			  AirDrum.labels.get("sounds").get(1).setText("Bass played");
+			        			  AirDrum.play("bass");
 			        			  playSound = true;
 			        			  soundWait++;
 		        			  } else {
@@ -86,13 +142,13 @@ class Runner extends Thread {
 		        			  }
 		        		  } else {
 		        			  if(soundWait == 0)
-		        				  Shit.labels.get("sounds").get(1).setText("");
+		        				  AirDrum.labels.get("sounds").get(1).setText("");
 		        		  }
 		        		  
 		        		  if(isSnare) {
 		        			  if(!playSound && delta == -1 && soundWait == 0) {
-			        			  Shit.labels.get("sounds").get(2).setText("Snare played");
-			        			  Shit.play("snare");
+			        			  AirDrum.labels.get("sounds").get(2).setText("Snare played");
+			        			  AirDrum.play("snare");
 			        			  playSound = true;
 			        			  soundWait++;
 		        			  } else {
@@ -104,7 +160,7 @@ class Runner extends Thread {
 		        			  }
 		        		  } else {
 		        			  if(soundWait == 0)
-		        				  Shit.labels.get("sounds").get(2).setText("");
+		        				  AirDrum.labels.get("sounds").get(2).setText("");
 		        		  }
 		        		  if(!isBass && !isCymbal && !isSnare) {
 		        			  soundWait = 0;
@@ -128,28 +184,28 @@ class Runner extends Thread {
 		        			  delta = -1.0;
 		        		 // Gets the all 5 finger flex information
 		        		  for (int i = 0; i < 5; i++)
-		        		 Shit.labels.get("flex").get(i).setText("finger"+ (i + 1)+ ": " + String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(i)));
+		        		 AirDrum.labels.get("flex").get(i).setText("finger"+ (i + 1)+ ": " + String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("flex")).get(i)));
 		        		  
 		        		// Gets the all 5 finger pressure information
 		        		  for (int i = 0; i < 5; i++)
-				        Shit.labels.get("pressure").get(i).setText("finger"+ (i + 1)+ ": " + String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(i)));
+				        AirDrum.labels.get("pressure").get(i).setText("finger"+ (i + 1)+ ": " + String.valueOf(((JSONArray)((JSONObject)o.get("fingers")).get("pressure")).get(i)));
 		        		  
 		        		  String[] chars = {"x", "y", "z"};
 		        		  String[] hpr = {"heading", "pitch", "roll"};
 		        		// Gets the Accelerometer adc information
 		        		  for (int i = 0; i < 3; i++)
-						Shit.labels.get("accelerometer_adc").get(i).setText(chars[i] + ": " + String.valueOf(
+						AirDrum.labels.get("accelerometer_adc").get(i).setText(chars[i] + ": " + String.valueOf(
 								((JSONObject)((JSONObject)((JSONObject)
 										o.get("hand"))
 										.get("accelerometer")).
 										get("adc")).get(chars[i])));
 
 		        		// Gets the Accelerometer delta (change in adc) information
-		        		  Shit.labels.get("accelerometer_delta").get(0).setText("delta: " + delta);
+		        		  AirDrum.labels.get("accelerometer_delta").get(0).setText("delta: " + delta);
 		        		  
 		        		// Gets the Attitude g information
 		        		  for (int i = 0; i < 3; i++)
-								Shit.labels.get("accelerometer_g").get(i).setText(chars[i] + ": " + String.valueOf(
+								AirDrum.labels.get("accelerometer_g").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("accelerometer")).
@@ -157,7 +213,7 @@ class Runner extends Thread {
 		        		  
 		        		// Gets the Attitude degrees information
 		        		  for (int i = 0; i < 3; i++)
-								Shit.labels.get("attitude_degrees").get(i).setText(hpr[i] + ": " + String.valueOf(
+								AirDrum.labels.get("attitude_degrees").get(i).setText(hpr[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("attitude")).
@@ -165,7 +221,7 @@ class Runner extends Thread {
 
 		        		  // Gets the Attitude radians information
 		        		  for (int i = 0; i < 3; i++)
-								Shit.labels.get("attitude_radians").get(i).setText(hpr[i] + ": " + String.valueOf(
+								AirDrum.labels.get("attitude_radians").get(i).setText(hpr[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("attitude")).
@@ -173,7 +229,7 @@ class Runner extends Thread {
 
 		        		  // Gets the Gyroscope adc information
 		        		  for (int i = 0; i < 3; i++)
-								Shit.labels.get("gyroscope_adc").get(i).setText(chars[i] + ": " + String.valueOf(
+								AirDrum.labels.get("gyroscope_adc").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("gyroscope")).
@@ -181,7 +237,7 @@ class Runner extends Thread {
 		        		  
 		        		  // Gets the Gyroscope dps information
 		        		  for (int i = 0; i < 3; i++)
-								Shit.labels.get("gyroscope_dps").get(i).setText(chars[i] + ": " + String.valueOf(
+								AirDrum.labels.get("gyroscope_dps").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("gyroscope")).
@@ -189,7 +245,7 @@ class Runner extends Thread {
 		        		  
 		        		  // Gets the Magnetometer adc information
 		        		  for (int i = 0; i < 3; i++)
-								Shit.labels.get("magnetometer_adc").get(i).setText(chars[i] + ": " + String.valueOf(
+								AirDrum.labels.get("magnetometer_adc").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("magnetometer")).
@@ -197,7 +253,7 @@ class Runner extends Thread {
 		        		  
 		        		  // Gets the Magnetometer gauss information
 		        		  for (int i = 0; i < 3; i++)
-								Shit.labels.get("magnetometer_gauss").get(i).setText(chars[i] + ": " + String.valueOf(
+								AirDrum.labels.get("magnetometer_gauss").get(i).setText(chars[i] + ": " + String.valueOf(
 										((JSONObject)((JSONObject)((JSONObject)
 												o.get("hand"))
 												.get("magnetometer")).
@@ -219,7 +275,7 @@ class Runner extends Thread {
     
 
 
-public class Shit{
+public class AirDrum{
 
 	
 public static HashMap<String, ArrayList<JLabel>> labels = new HashMap<String, ArrayList<JLabel>>();
@@ -266,9 +322,9 @@ public static void addSet(String setName, int iterations) {
 	
 public static void play(String s) {
 		Clip clip = sfx.get(s);
-		if (clip.getFramePosition() != 0) {
+		
 		clip.stop();
-		clip.setFramePosition(0);}
+		clip.setFramePosition(0);
 		
 		//if (clip.getFramePosition() != 0)
 		clip.start();
